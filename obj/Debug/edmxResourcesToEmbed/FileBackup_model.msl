@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="FileBackupSQLModelStoreContainer" CdmEntityContainer="FileBackupSQLEntities">
+    <EntitySetMapping Name="FileBackupHistories">
+      <EntityTypeMapping TypeName="FileBackupSQLModel.FileBackupHistory">
+        <MappingFragment StoreEntitySet="FileBackupHistory">
+          <ScalarProperty Name="FK_FileId" ColumnName="FK_FileId" />
+          <ScalarProperty Name="FileHistoryEditedDateTime" ColumnName="FileHistoryEditedDateTime" />
+          <ScalarProperty Name="FileHistoryUserName" ColumnName="FileHistoryUserName" />
+          <ScalarProperty Name="FileHistoryBackupDateTime" ColumnName="FileHistoryBackupDateTime" />
+          <ScalarProperty Name="FileHistoryOriginPath" ColumnName="FileHistoryOriginPath" />
+          <ScalarProperty Name="FileHistoryDescription" ColumnName="FileHistoryDescription" />
+          <ScalarProperty Name="FileHistoryZipPathName" ColumnName="FileHistoryZipPathName" />
+          <ScalarProperty Name="PK_FileHistoryId" ColumnName="PK_FileHistoryId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="FileBackupMains">
+      <EntityTypeMapping TypeName="FileBackupSQLModel.FileBackupMain">
+        <MappingFragment StoreEntitySet="FileBackupMain">
+          <ScalarProperty Name="FileLastEditedDateTime" ColumnName="FileLastEditedDateTime" />
+          <ScalarProperty Name="FileName" ColumnName="FileName" />
+          <ScalarProperty Name="PK_FileId" ColumnName="PK_FileId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="FilesUpdatedOrAddeds">
+      <EntityTypeMapping TypeName="FileBackupSQLModel.FilesUpdatedOrAdded">
+        <MappingFragment StoreEntitySet="FilesUpdatedOrAdded">
+          <ScalarProperty Name="FileChangeDateTime" ColumnName="FileChangeDateTime" />
+          <ScalarProperty Name="FileChangeType" ColumnName="FileChangeType" />
+          <ScalarProperty Name="FileFullNamePath" ColumnName="FileFullNamePath" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

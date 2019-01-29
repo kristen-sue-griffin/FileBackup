@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="FileBackupSQLModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="FileBackupHistory">
+          <Key>
+            <PropertyRef Name="PK_FileHistoryId" />
+          </Key>
+          <Property Name="PK_FileHistoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FileHistoryZipPathName" Type="varchar" MaxLength="5000" />
+          <Property Name="FileHistoryDescription" Type="varchar" MaxLength="5000" />
+          <Property Name="FileHistoryOriginPath" Type="varchar" MaxLength="500" />
+          <Property Name="FileHistoryBackupDateTime" Type="datetime" />
+          <Property Name="FileHistoryUserName" Type="varchar" MaxLength="50" />
+          <Property Name="FileHistoryEditedDateTime" Type="datetime" />
+          <Property Name="FK_FileId" Type="int" />
+        </EntityType>
+        <EntityType Name="FileBackupMain">
+          <Key>
+            <PropertyRef Name="PK_FileId" />
+          </Key>
+          <Property Name="PK_FileId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FileName" Type="varchar" MaxLength="500" />
+          <Property Name="FileLastEditedDateTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="FilesUpdatedOrAdded">
+          <Key>
+            <PropertyRef Name="FileFullNamePath" />
+          </Key>
+          <Property Name="FileFullNamePath" Type="varchar" MaxLength="5000" Nullable="false" />
+          <Property Name="FileChangeType" Type="int" />
+          <Property Name="FileChangeDateTime" Type="datetime" />
+        </EntityType>
+        <Association Name="FK_FileBackupHistory_FileBackupMain">
+          <End Role="FileBackupMain" Type="Self.FileBackupMain" Multiplicity="0..1" />
+          <End Role="FileBackupHistory" Type="Self.FileBackupHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileBackupMain">
+              <PropertyRef Name="PK_FileId" />
+            </Principal>
+            <Dependent Role="FileBackupHistory">
+              <PropertyRef Name="FK_FileId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="FileBackupSQLModelStoreContainer">
+          <EntitySet Name="FileBackupHistory" EntityType="Self.FileBackupHistory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FileBackupMain" EntityType="Self.FileBackupMain" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FilesUpdatedOrAdded" EntityType="Self.FilesUpdatedOrAdded" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_FileBackupHistory_FileBackupMain" Association="Self.FK_FileBackupHistory_FileBackupMain">
+            <End Role="FileBackupMain" EntitySet="FileBackupMain" />
+            <End Role="FileBackupHistory" EntitySet="FileBackupHistory" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="FileBackupSQLModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="FileBackupSQLEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="FileBackupHistories" EntityType="FileBackupSQLModel.FileBackupHistory" />
+          <EntitySet Name="FileBackupMains" EntityType="FileBackupSQLModel.FileBackupMain" />
+          <EntitySet Name="FilesUpdatedOrAddeds" EntityType="FileBackupSQLModel.FilesUpdatedOrAdded" />
+          <AssociationSet Name="FK_FileBackupHistory_FileBackupMain" Association="FileBackupSQLModel.FK_FileBackupHistory_FileBackupMain">
+            <End Role="FileBackupMain" EntitySet="FileBackupMains" />
+            <End Role="FileBackupHistory" EntitySet="FileBackupHistories" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="FileBackupHistory">
+          <Key>
+            <PropertyRef Name="PK_FileHistoryId" />
+          </Key>
+          <Property Name="PK_FileHistoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FileHistoryZipPathName" Type="String" MaxLength="5000" FixedLength="false" Unicode="false" />
+          <Property Name="FileHistoryDescription" Type="String" MaxLength="5000" FixedLength="false" Unicode="false" />
+          <Property Name="FileHistoryOriginPath" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="FileHistoryBackupDateTime" Type="DateTime" Precision="3" />
+          <Property Name="FileHistoryUserName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FileHistoryEditedDateTime" Type="DateTime" Precision="3" />
+          <Property Name="FK_FileId" Type="Int32" />
+          <NavigationProperty Name="FileBackupMain" Relationship="FileBackupSQLModel.FK_FileBackupHistory_FileBackupMain" FromRole="FileBackupHistory" ToRole="FileBackupMain" />
+        </EntityType>
+        <EntityType Name="FileBackupMain">
+          <Key>
+            <PropertyRef Name="PK_FileId" />
+          </Key>
+          <Property Name="PK_FileId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FileName" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="FileLastEditedDateTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="FileBackupHistories" Relationship="FileBackupSQLModel.FK_FileBackupHistory_FileBackupMain" FromRole="FileBackupMain" ToRole="FileBackupHistory" />
+        </EntityType>
+        <EntityType Name="FilesUpdatedOrAdded">
+          <Key>
+            <PropertyRef Name="FileFullNamePath" />
+          </Key>
+          <Property Name="FileFullNamePath" Type="String" Nullable="false" MaxLength="5000" FixedLength="false" Unicode="false" />
+          <Property Name="FileChangeType" Type="Int32" />
+          <Property Name="FileChangeDateTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <Association Name="FK_FileBackupHistory_FileBackupMain">
+          <End Type="FileBackupSQLModel.FileBackupMain" Role="FileBackupMain" Multiplicity="0..1" />
+          <End Type="FileBackupSQLModel.FileBackupHistory" Role="FileBackupHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileBackupMain">
+              <PropertyRef Name="PK_FileId" />
+            </Principal>
+            <Dependent Role="FileBackupHistory">
+              <PropertyRef Name="FK_FileId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="FileBackupSQLModelStoreContainer" CdmEntityContainer="FileBackupSQLEntities">
+          <EntitySetMapping Name="FileBackupHistories">
+            <EntityTypeMapping TypeName="FileBackupSQLModel.FileBackupHistory">
+              <MappingFragment StoreEntitySet="FileBackupHistory">
+                <ScalarProperty Name="FK_FileId" ColumnName="FK_FileId" />
+                <ScalarProperty Name="FileHistoryEditedDateTime" ColumnName="FileHistoryEditedDateTime" />
+                <ScalarProperty Name="FileHistoryUserName" ColumnName="FileHistoryUserName" />
+                <ScalarProperty Name="FileHistoryBackupDateTime" ColumnName="FileHistoryBackupDateTime" />
+                <ScalarProperty Name="FileHistoryOriginPath" ColumnName="FileHistoryOriginPath" />
+                <ScalarProperty Name="FileHistoryDescription" ColumnName="FileHistoryDescription" />
+                <ScalarProperty Name="FileHistoryZipPathName" ColumnName="FileHistoryZipPathName" />
+                <ScalarProperty Name="PK_FileHistoryId" ColumnName="PK_FileHistoryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FileBackupMains">
+            <EntityTypeMapping TypeName="FileBackupSQLModel.FileBackupMain">
+              <MappingFragment StoreEntitySet="FileBackupMain">
+                <ScalarProperty Name="FileLastEditedDateTime" ColumnName="FileLastEditedDateTime" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="PK_FileId" ColumnName="PK_FileId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FilesUpdatedOrAddeds">
+            <EntityTypeMapping TypeName="FileBackupSQLModel.FilesUpdatedOrAdded">
+              <MappingFragment StoreEntitySet="FilesUpdatedOrAdded">
+                <ScalarProperty Name="FileChangeDateTime" ColumnName="FileChangeDateTime" />
+                <ScalarProperty Name="FileChangeType" ColumnName="FileChangeType" />
+                <ScalarProperty Name="FileFullNamePath" ColumnName="FileFullNamePath" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

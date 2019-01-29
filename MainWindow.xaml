@@ -1,0 +1,100 @@
+﻿<Window x:Class="FileBackup.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FileBackup"
+        xmlns:dat="clr-namespace:System.Windows.Data;assembly=PresentationFramework"
+        mc:Ignorable="d"
+        Title="File Backup" SizeToContent="Height" Width="1024" Loaded="Window_Loaded">
+    <Window.Resources>
+        <CollectionViewSource x:Key="filesUpdatedOrAddedViewSource" d:DesignSource="{d:DesignInstance {x:Type local:FilesUpdatedOrAdded}, CreateList=True}" CollectionViewType="{x:Type dat:ListCollectionView}" Filter="CollectionViewSource_Filter"/>
+        <RoutedUICommand x:Key="backupSelectedCommand" Text="Backup"/>
+        <RoutedUICommand x:Key="filterHistoryCommand" Text="Filter History"/>
+        <!--<CollectionViewSource x:Key="fileBackupMainViewSource" d:DesignSource="{d:DesignInstance {x:Type local:FileBackupMain}, CreateList=True}" IsLiveFilteringRequested="True" IsLiveGroupingRequested="True" IsLiveSortingRequested="True" />
+        -->
+        <CollectionViewSource 
+            Source="{Binding ElementName=FileBackupMain, Path=SelectedValue.FileName}" 
+            x:Key="fileBackupMainViewSource" Filter="CollectionViewSource_Filter"
+            x:Name="historyView"
+            CollectionViewType="{x:Type dat:ListCollectionView}" />
+        <CollectionViewSource x:Key="fileBackupMainFileBackupHistoriesViewSource" Source="{Binding FileBackupHistories, Source={StaticResource fileBackupMainViewSource}}" IsLiveSortingRequested="True"/>
+    </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="{StaticResource backupSelectedCommand}" Executed="BackupSelectedCommandHandler"/>
+    </Window.CommandBindings>
+    <TabControl Name="fileBackupTabs">
+        <TabItem Header="Needs Backup">
+            <StackPanel Margin="0,0,0,0">
+                
+                <Grid DataContext="{StaticResource filesUpdatedOrAddedViewSource}">
+                    <DataGrid x:Name="filesUpdatedOrAddedDataGrid" AutoGenerateColumns="False" ItemsSource="{Binding Source={StaticResource filesUpdatedOrAddedViewSource}}" Margin="0,0,0,0" RowDetailsVisibilityMode="VisibleWhenSelected">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn x:Name="fileChangeDateTimeColumn1" Header="File Change Date Time" Width="150">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <DatePicker SelectedDate="{Binding FileChangeDateTime, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn x:Name="fileChangeTypeColumn1" Binding="{Binding FileChangeType}" Header="File Change Type" Width="150"/>
+                            <DataGridTextColumn x:Name="fileFullNamePathColumn1" Binding="{Binding FileFullNamePath}" Header="File Full Name Path" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Name="btnBackupSelected" Command="{StaticResource backupSelectedCommand}" Background="#FF00D41D">Backup</Button>
+                    <Button Grid.Column="1" Background="#FFF30303">Cancel</Button>
+                </Grid>
+            </StackPanel>
+        </TabItem>
+        <TabItem Header="Backup History">
+            <StackPanel Margin="0,0,0,0">
+                <Label Name="filterLabel" IsEnabled="False" >Filter History</Label>
+                <TextBox Name="filterTextBox" TextChanged="FilterTextBox_TextChanged"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="25" />
+                    </Grid.RowDefinitions>
+                    <DataGrid 
+                        x:Name="fileBackupMainDataGrid"
+                        AutoGenerateColumns="False"
+                        ItemsSource="{Binding Source={StaticResource fileBackupMainViewSource}}"                         
+                        Grid.Row="0">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="File Last Edited Date" Binding="{Binding Path=FileLastEditedDateTime}" IsReadOnly="True" CanUserReorder="False"/>
+                            <DataGridTextColumn x:Name="fileNameColumn" Header="File Name" Binding="{Binding Path=FileName}" Width="840" CanUserReorder="False" IsReadOnly="True" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+                <DataGrid x:Name="fileBackupHistoriesDataGrid" AutoGenerateColumns="False" EnableRowVirtualization="True" ItemsSource="{Binding Source={StaticResource fileBackupMainFileBackupHistoriesViewSource}}" RowDetailsVisibilityMode="VisibleWhenSelected" SelectionMode="Single" SelectionUnit="FullRow" Margin="10,10,10,10">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn x:Name="fileHistoryBackupDateTimeColumn" Header="Backup Date" Width="150">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DatePicker SelectedDate="{Binding FileHistoryBackupDateTime, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn x:Name="fileHistoryDescriptionColumn" Binding="{Binding FileHistoryDescription}" Header="Description" Width="2*"/>
+                        <DataGridTemplateColumn x:Name="fileHistoryEditedDateTimeColumn" Header="File History Last Edited" Width="150">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DatePicker SelectedDate="{Binding FileHistoryEditedDateTime, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn x:Name="fileHistoryUserNameColumn" Binding="{Binding FileHistoryUserName}" Header="User Name" Width="2*"/>
+                        <DataGridTextColumn x:Name="fileHistoryZipPathNameColumn" Binding="{Binding FileHistoryZipPathName}" Header="Zip Path Name" Width="*"/>
+                        <DataGridTextColumn x:Name="fileHistoryOriginPathColumn" Binding="{Binding FileHistoryOriginPath}" Header="Origin Path" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+        </TabItem>
+    </TabControl>
+</Window>
